@@ -30,7 +30,7 @@ export default function CricketSection({ data, loading, error }: Props) {
 
       {data.matches.length === 0 ? (
         <p className="text-sm text-slate-400">
-          No interesting matches today or tomorrow
+          No England matches right now
         </p>
       ) : (
         <div className="space-y-3">
@@ -44,56 +44,28 @@ export default function CricketSection({ data, loading, error }: Props) {
 }
 
 function MatchCard({ match }: { match: CricketMatch }) {
-  const statusBg = {
-    live: "bg-red-500/20 text-red-400",
-    upcoming: "bg-blue-500/20 text-blue-400",
-    completed: "bg-slate-600/50 text-slate-400",
-  }[match.status] ?? "bg-slate-600/50 text-slate-400";
+  const isLive = match.status === "live";
 
   return (
     <div className="bg-slate-700/50 rounded-lg p-3">
-      {/* Header: format badge + competition */}
+      {/* Status badge */}
       <div className="flex items-center gap-2 mb-1.5">
-        <span className="text-xs font-bold bg-slate-600 text-slate-200 rounded px-1.5 py-0.5">
-          {match.format}
-        </span>
-        <span className={`text-xs rounded px-1.5 py-0.5 ${statusBg}`}>
-          {match.status === "live" ? "LIVE" : match.status === "upcoming" ? "Upcoming" : "Completed"}
-        </span>
-        {match.competition && (
-          <span className="text-xs text-slate-400 truncate">
-            {match.competition}
+        {isLive && (
+          <span className="text-xs rounded px-1.5 py-0.5 bg-red-500/20 text-red-400 font-semibold">
+            LIVE
           </span>
         )}
       </div>
 
       {/* Teams */}
       <div className="text-sm font-medium text-slate-200 mb-1">
-        {match.teams.join(" vs ")}
+        {match.teams.join(" v ")}
       </div>
 
-      {/* Score if available */}
+      {/* Score if live */}
       {match.score && (
-        <div className="text-xs text-slate-300 mb-1">{match.score}</div>
+        <div className="text-xs text-slate-300 font-mono">{match.score}</div>
       )}
-
-      {/* Status text */}
-      <div className="text-xs text-slate-400 mb-1">{match.statusText}</div>
-
-      {/* Venue + ground weather */}
-      <div className="flex items-center justify-between">
-        <span className="text-xs text-slate-500">
-          {match.venue}
-          {match.venueCountry ? `, ${match.venueCountry}` : ""}
-        </span>
-        {match.groundWeather && (
-          <span className="text-xs text-slate-400">
-            {match.groundWeather.icon} {match.groundWeather.temperature}°C
-            {match.groundWeather.precipitationMm > 0 &&
-              ` | ${match.groundWeather.precipitationMm}mm`}
-          </span>
-        )}
-      </div>
     </div>
   );
 }
